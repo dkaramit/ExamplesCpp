@@ -6,7 +6,7 @@ using std::cout;
 using std::endl;
 
 
-#include<GeneralExpressionTemplates.hpp>
+#include<ExpressionTemplates.hpp>
 
 
 
@@ -20,15 +20,9 @@ int main(){
     cout<<x<<endl;
     cout<<y<<endl;
 
-<<<<<<< HEAD
-    Vector u(x+y+x);
-    cout<<u<<endl;
-    cout<<cos(u)<<endl;
-=======
     cout<<(x+y+x)<<endl;
     cout<<cos(x+y+x)<<endl;
     cout<<cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(cos(x+x+y)))))))))))))))))<<endl;
->>>>>>> test
 
 
     return 0;

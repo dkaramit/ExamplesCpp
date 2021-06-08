@@ -1,14 +1,11 @@
-all: SimpleExpressionTemplates.run GeneralExpressionTemplates.run
-
-SimpleExpressionTemplates.run: $(wildcard *.hpp) makefile SimpleExpressionTemplates.cpp
-	g++ -o SimpleExpressionTemplates.run -I"./" SimpleExpressionTemplates.cpp
+all: ExpressionTemplates.run
 
 
-GeneralExpressionTemplates.run: $(wildcard *.hpp) makefile GeneralExpressionTemplates.cpp
-	g++ -o GeneralExpressionTemplates.run -I"./" GeneralExpressionTemplates.cpp
+
+ExpressionTemplates.run: $(wildcard *.hpp) makefile ExpressionTemplates.cpp
+	g++ -o ExpressionTemplates.run -I"./" ExpressionTemplates.cpp
 
 
 
 clean:
-	rm GeneralExpressionTemplates.run || true
-	rm SimpleExpressionTemplates.run || true
+	rm ExpressionTemplates.run || true

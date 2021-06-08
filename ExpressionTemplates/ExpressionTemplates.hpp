@@ -13,11 +13,7 @@ template<typename Type>
 class Expression{
     public:
     // This allows us to convert any expression to its sub-expressions, giving us access to their members. 
-<<<<<<< HEAD
-    inline const Type& subExpression() const {return  *static_cast<const Type*>(this);} 
-=======
     // inline const Type& subExpression() const {return  *static_cast<const Type*>(this);} 
->>>>>>> test
 };
 
 // this is the vector class. It will be used to define vectors that can be added and multiplied.
@@ -33,13 +29,7 @@ class Vector: public Expression<Vector>{
     Vector(const Type &v): elements(v),length(v.size()){}
     Vector(unInt size): elements(size), length(size){}
 
-<<<<<<< HEAD
-    template<typename ExprType>
-    Vector(const Expression<ExprType> &other){
-        const ExprType &v= other.subExpression();
-=======
     Vector(const Vector &v){
->>>>>>> test
 
         for(unInt i=0; i<v.size(); ++i){
             elements.push_back(v.evaluate(i));
@@ -50,14 +40,8 @@ class Vector: public Expression<Vector>{
 
 
     // constructor that takes any Expression and makes it a vector
-<<<<<<< HEAD
-    template<typename ExprType>
-    Vector& operator=(const Expression<ExprType> &other){
-        const ExprType &v= other.subExpression();
-=======
     Vector& operator=(const Vector &v){
         
->>>>>>> test
         for(unInt i=0; i<length; ++i){
             elements[i]=v.evaluate(i);
         }
@@ -126,13 +110,8 @@ class Addition{
 
 // definition of sum through the generic biniaryOperator
 template<typename leftHand, typename rightHand>
-<<<<<<< HEAD
-binaryOperator<Addition<leftHand,rightHand>,leftHand,rightHand> operator+(const Expression<leftHand> &LH, const Expression<rightHand> &RH){
-    return binaryOperator<Addition<leftHand,rightHand>,leftHand,rightHand>(LH.subExpression(),RH.subExpression());
-=======
 binaryOperator<Addition<leftHand,rightHand>,leftHand,rightHand> operator+(const leftHand &LH, const rightHand &RH){
     return binaryOperator<Addition<leftHand,rightHand>,leftHand,rightHand>(LH,RH);
->>>>>>> test
 }
 
 
@@ -176,11 +155,6 @@ class Cos{
 
 // definition of cos through the generic uniaryOperator
 template<typename Expr>
-<<<<<<< HEAD
-unaryOperator<Cos<Expr>,Expr> cos(const Expression<Expr> &V){
-    return unaryOperator<Cos<Expr>,Expr>(V.subExpression());
-=======
 unaryOperator<Cos<Expr>,Expr> cos(const Expr &V){
     return unaryOperator<Cos<Expr>,Expr>(V);
->>>>>>> test
 }
