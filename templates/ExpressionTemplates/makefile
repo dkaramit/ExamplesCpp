@@ -1,11 +1,11 @@
-all: ExpressionTemplates.run
+all: example.run
 
 
 
-ExpressionTemplates.run: $(wildcard *.hpp) makefile ExpressionTemplates.cpp
-	g++ -o ExpressionTemplates.run -I"./" ExpressionTemplates.cpp
+example.run: $(wildcard *.hpp) makefile example.cpp
+	g++ -o example.run -I"./" example.cpp
 
 
 
 clean:
-	rm ExpressionTemplates.run || true
+	rm example.run || true
