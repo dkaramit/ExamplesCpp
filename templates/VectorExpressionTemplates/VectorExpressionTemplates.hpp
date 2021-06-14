@@ -16,7 +16,7 @@ class Vector{
 
 public:
     Vector()=default;
-    Vector(const unInt n, const double value) : elements(n, value){}
+    Vector(const unInt n, const LD value) : elements(n, value){}
 
     // Constructor for other Vector<Type>
     Vector(const Type& other) : elements(other){}

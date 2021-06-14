@@ -1,44 +1,90 @@
-#ifndef VECTOR_HEAD
-#define VECTOR_HEAD
+#ifndef Expr_HEAD
+#define Expr_HEAD
 
-/*I wrote this example after looking at https://www.modernescpp.com/index.php/expression-templates*/
-/*You should check it out*/
 
 #include<iostream>
 #include<cmath>
-#include<vector>
 
 using unInt = unsigned int;
 
-template<typename LD, typename Type=LD>
-class Expression{
-  Type value;   
+class Constant{
+    double value;
 
-public:
-    Expression()=default;
-    Expression(const LD value) : value(value){}
-
-    // Constructor for other Expression<Type>
-    Expression(const Type& other) : value(other){}
-
-    /*assignment to another expression*/
-    template<typename otherLD, typename otherType>
-    Expression& operator=(const Expression<otherLD, otherType>& other){
-        value()=other();
-        return *this;
-    }
-
-    LD operator()(const unInt i) const{ return elements[i]; }
-    LD& operator()(const unInt i){ return elements[i]; }
+    public:
+    Constant()=default;
+    Constant(const double &x):value(x){}
+    double evaluate()  const {return value;}
+    double& evaluate()  {return value;}
+    Constant derivative()  const {return Constant(0);}
 };
 
 
-template<typename LD, typename Type>
-std::ostream& operator<<(std::ostream& os, const Expression<LD,Type>& v)
-{
-    os <<v();
-    return os;
+class Variable{
+    double value;
+
+    public:
+    Variable()=default;
+    Variable(const double &x):value(x){}
+    double evaluate()  const {return value;}
+    double& evaluate()  {return value;}
+    Constant derivative()  const {return Constant(1);}
+
+};
+
+
+
+template<typename leftHand , typename rightHand>
+class Addition{
+    leftHand LH;
+    rightHand RH;
+
+    public:
+    Addition(const leftHand& LH, const rightHand& RH): LH(LH), RH(RH){}
+
+    double evaluate() const{ return LH.evaluate()  + RH.evaluate() ;  }
+    auto derivative()  const {return LH.derivative() +  RH.derivative();}
+};
+
+template<typename leftHand, typename rightHand>
+auto add(const leftHand& LH, const rightHand& RH ){
+    return Addition<leftHand,rightHand>(LH,RH);
 }
+
+
+template<typename Type>
+class Expression{
+    Type expr;
+    public:
+    Expression(const Type &expr):expr(expr){}
+
+    template<typename otherType>
+    Expression& operator=(const Expression<otherType> &expr){
+        this->evaluate()=expr.evaluate();//need some kind of copying, in order to get the derivative member
+        return *this;
+    }
+
+    double evaluate() const {return expr.evaluate();}
+    double& evaluate() {return expr.evaluate();}
+    
+    auto derivative() {return expr.derivative();}
+
+    const Type& getExpr() const {return expr;}
+};
+
+
+
+template<typename leftType, typename rightType>
+auto operator+ (const Expression<leftType>& lh, const Expression<rightType>& rh){
+  return 
+  Expression<Addition<leftType, rightType> >(Addition<leftType, rightType >
+  (lh.getExpr(), rh.getExpr()));
+}
+
+
+
+
+template<typename Type>
+std::ostream& operator<<(std::ostream& os, const Expression<Type>& v){os <<v.evaluate(); return os;}
 
 
 #endif
