@@ -5,23 +5,22 @@
 #include<iostream>
 #include<cmath>
 
+
+// message to print during evaluation, in order to track the evaluation path.
 #define msg std::cout<<typeid(*this).name()<<std::endl;
 
 
 struct BaseExpression{
     BaseExpression()=default;
     virtual double evaluate()const =0 ;
-    virtual BaseExpression* clone()const =0 ;
 };
 
 template<typename subExpr>
 struct GenericExpression:BaseExpression{
     const subExpr& self() const {return static_cast<const subExpr&>(*this);}
+    subExpr& self() {return static_cast<subExpr&>(*this);}
     
     double evaluate() const { msg; return self().evaluate(); };
-    
-    GenericExpression* clone() const { return new GenericExpression(*this); }  
-
 };
 
 
@@ -34,8 +33,7 @@ class Number: public GenericExpression<Number>{
     Number(const Number &x):val(x.evaluate()){}
     
     double evaluate()const  { msg; return val;}
-    Number* clone() const { return new Number(*this); }  
-
+    double& evaluate() { msg; return val;}
 };
 
 template<typename leftHand,typename rightHand>
@@ -47,7 +45,6 @@ class Addition:public GenericExpression<Addition<leftHand,rightHand>>{
     Addition(const leftHand &LH, const rightHand &RH):LH(LH),RH(RH){}
 
     double evaluate() const {msg; return LH.evaluate() + RH.evaluate();}
-    Addition* clone() const { return new Addition(LH,RH); }  
 };
 
 template<typename leftHand,typename rightHand>
@@ -58,22 +55,29 @@ operator+(const GenericExpression<leftHand> &LH, const GenericExpression<rightHa
 
 
 class Expression: public GenericExpression<Expression>{
-    BaseExpression *baseExpr;
     public:
+    BaseExpression *baseExpr;
 
     Expression()=default;
-    Expression(const Expression &E){baseExpr = E.baseExpr->clone();};
-
-    template<typename subExpr>
-    void assign(const GenericExpression<subExpr> &expr){
-        baseExpr = expr.clone();
-    }
+    Expression(const Expression &E){baseExpr = E.baseExpr;};
+    Expression(Expression *E){baseExpr = E->baseExpr;};
 
     double evaluate() const {msg;  return baseExpr->evaluate();}
 
-    Expression* clone() { return new Expression(*this); }  
 };
 
+
+template<typename subExpr>
+void assign(Expression &LH ,const GenericExpression<subExpr> &RH){
+    
+    LH.baseExpr = new subExpr(RH.self());
+}
+
+template<>
+void assign(Expression &LH ,const GenericExpression<Expression> &RH){
+    
+    LH.baseExpr = new Expression(RH.self());
+}
 
 
 
