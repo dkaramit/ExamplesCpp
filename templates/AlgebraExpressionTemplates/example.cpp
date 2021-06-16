@@ -16,22 +16,32 @@ int main(){
     Expression z,w;
 
     // works fine!
-    z.assign(x);
-    cout<<z.evaluate()<<endl;
+    // z.assign(x);
+    // cout<<z.evaluate()<<endl;
+
     // works fine!
-    z.assign(x+y);
-    cout<<z.evaluate()<<endl;
+    // z.assign(x+y);
+    // cout<<z.evaluate()<<endl;
+
+    // works fine!
+    // z.assign(y+x+x+x+x);
+    // cout<<z.evaluate()<<endl;
 
     
     // works fine!
-    w.assign(z+y);
-    cout<<w.evaluate()<<endl;
+    // w.assign(z+y);
+    // cout<<w.evaluate()<<endl;
 
     // Segmentation fault of z.evaluate() infinite recursion in between
     // LH.evaluate() (in Addition<Expression,Number>::evaluate()) and 
     // baseExpr->evaluate() (in Expression::evaluate())
-    z.assign(z+x);
-    cout<<z.evaluate()<<endl;
+    // z.assign(z+x);
+    // cout<<z.evaluate()<<endl;
+
+    // Uknown Segmentation fault!
+    // z.assign(y+x+x+x+x);
+    // w.assign(z+y+z);
+    // cout<<w.evaluate()<<endl;
 
     return 0;
 }
