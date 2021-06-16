@@ -1,6 +1,6 @@
 #include<iostream>
 #include<cmath>
-#include<vector>
+#include<functional>
 
 
 #include<AlgebraExpressionTemplates.hpp>
@@ -42,6 +42,17 @@ int main(){
     // z.assign(y+x+x+x+x);
     // w.assign(z+y+z);
     // cout<<w.evaluate()<<endl;
+
+
+
+    // Maybe use functional techniques...
+    auto func = [] (auto expr1, auto expr2) { return expr1 + expr2 + expr1 + expr2; };
+
+    // this works
+    // cout << (x+x+x+x+x+x+x+x).evaluate() << endl;
+    // segfault... The evaluation seems to happen backwards (according to what msg prints) than the sum...
+    cout << (func(x,x)).evaluate() << endl;
+    
 
     return 0;
 }
