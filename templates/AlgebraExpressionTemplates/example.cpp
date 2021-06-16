@@ -16,21 +16,21 @@ int main(){
     Expression z,w;
 
     // works fine!
-    assign(z,x);
+    z.assign(x);
     cout<<z.evaluate()<<endl;
     // works fine!
-    assign(z,x+y);
+    z.assign(x+y);
     cout<<z.evaluate()<<endl;
 
     
     // works fine!
-    assign(w,z+y);
+    w.assign(z+y);
     cout<<w.evaluate()<<endl;
 
     // Segmentation fault of z.evaluate() infinite recursion in between
     // LH.evaluate() (in Addition<Expression,Number>::evaluate()) and 
     // baseExpr->evaluate() (in Expression::evaluate())
-    assign(z,z+x);
+    z.assign(z+x);
     cout<<z.evaluate()<<endl;
 
     return 0;

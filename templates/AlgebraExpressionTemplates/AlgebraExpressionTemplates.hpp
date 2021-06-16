@@ -60,24 +60,25 @@ class Expression: public GenericExpression<Expression>{
 
     Expression()=default;
     Expression(const Expression &E){baseExpr = E.baseExpr;};
-    Expression(Expression *E){baseExpr = E->baseExpr;};
+    // Expression(Expression *E){baseExpr = E->baseExpr;};
 
     double evaluate() const {msg;  return baseExpr->evaluate();}
+
+
+    template<typename subExpr>
+    void assign(const GenericExpression<subExpr> &RH){
+        
+        baseExpr = new subExpr(RH.self());
+    }
 
 };
 
 
-template<typename subExpr>
-void assign(Expression &LH ,const GenericExpression<subExpr> &RH){
+// template<typename subExpr>
+// void assign(Expression &LH ,const GenericExpression<subExpr> &RH){
     
-    LH.baseExpr = new subExpr(RH.self());
-}
-
-template<>
-void assign(Expression &LH ,const GenericExpression<Expression> &RH){
-    
-    LH.baseExpr = new Expression(RH.self());
-}
+//     LH.baseExpr = new subExpr(RH.self());
+// }
 
 
 
