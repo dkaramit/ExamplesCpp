@@ -5,86 +5,76 @@
 #include<iostream>
 #include<cmath>
 
-using unInt = unsigned int;
+#define msg std::cout<<typeid(*this).name()<<std::endl;
 
-class Constant{
-    double value;
 
-    public:
-    Constant()=default;
-    Constant(const double &x):value(x){}
-    double evaluate()  const {return value;}
-    double& evaluate()  {return value;}
-    Constant derivative()  const {return Constant(0);}
+struct BaseExpression{
+    BaseExpression()=default;
+    virtual double evaluate()const =0 ;
+    virtual BaseExpression* clone()const =0 ;
 };
 
-
-class Variable{
-    double value;
-
-    public:
-    Variable()=default;
-    Variable(const double &x):value(x){}
-    double evaluate()  const {return value;}
-    double& evaluate()  {return value;}
-    Constant derivative()  const {return Constant(1);}
+template<typename subExpr>
+struct GenericExpression:BaseExpression{
+    const subExpr& self() const {return static_cast<const subExpr&>(*this);}
+    
+    double evaluate() const { msg; return self().evaluate(); };
+    
+    GenericExpression* clone() const { return new GenericExpression(*this); }  
 
 };
 
 
-
-template<typename leftHand , typename rightHand>
-class Addition{
-    leftHand LH;
-    rightHand RH;
-
+class Number: public GenericExpression<Number>{
+    double val;
     public:
-    Addition(const leftHand& LH, const rightHand& RH): LH(LH), RH(RH){}
+    Number()=default;
 
-    double evaluate() const{ return LH.evaluate()  + RH.evaluate() ;  }
-    auto derivative()  const {return LH.derivative() +  RH.derivative();}
+    Number(const double &x):val(x){}
+    Number(const Number &x):val(x.evaluate()){}
+    
+    double evaluate()const  { msg; return val;}
+    Number* clone() const { return new Number(*this); }  
+
 };
 
-template<typename leftHand, typename rightHand>
-auto add(const leftHand& LH, const rightHand& RH ){
-    return Addition<leftHand,rightHand>(LH,RH);
+template<typename leftHand,typename rightHand>
+class Addition:public GenericExpression<Addition<leftHand,rightHand>>{
+    const leftHand &LH;
+    const rightHand &RH;
+
+    public:
+    Addition(const leftHand &LH, const rightHand &RH):LH(LH),RH(RH){}
+
+    double evaluate() const {msg; return LH.evaluate() + RH.evaluate();}
+    Addition* clone() const { return new Addition(LH,RH); }  
+};
+
+template<typename leftHand,typename rightHand>
+Addition<leftHand,rightHand> 
+operator+(const GenericExpression<leftHand> &LH, const GenericExpression<rightHand> &RH){
+    return Addition<leftHand,rightHand>(LH.self(),RH.self()); 
 }
 
 
-template<typename Type>
-class Expression{
-    Type expr;
+class Expression: public GenericExpression<Expression>{
+    BaseExpression *baseExpr;
     public:
-    Expression(const Type &expr):expr(expr){}
 
-    template<typename otherType>
-    Expression& operator=(const Expression<otherType> &expr){
-        this->evaluate()=expr.evaluate();//need some kind of copying, in order to get the derivative member
-        return *this;
+    Expression()=default;
+    Expression(const Expression &E){baseExpr = E.baseExpr->clone();};
+
+    template<typename subExpr>
+    void assign(const GenericExpression<subExpr> &expr){
+        baseExpr = expr.clone();
     }
 
-    double evaluate() const {return expr.evaluate();}
-    double& evaluate() {return expr.evaluate();}
-    
-    auto derivative() {return expr.derivative();}
+    double evaluate() const {msg;  return baseExpr->evaluate();}
 
-    const Type& getExpr() const {return expr;}
+    Expression* clone() { return new Expression(*this); }  
 };
 
 
-
-template<typename leftType, typename rightType>
-auto operator+ (const Expression<leftType>& lh, const Expression<rightType>& rh){
-  return 
-  Expression<Addition<leftType, rightType> >(Addition<leftType, rightType >
-  (lh.getExpr(), rh.getExpr()));
-}
-
-
-
-
-template<typename Type>
-std::ostream& operator<<(std::ostream& os, const Expression<Type>& v){os <<v.evaluate(); return os;}
 
 
 #endif
