@@ -3,7 +3,7 @@
 
 
 #include<iostream>
-#include<cmath>
+#include<memory>
 
 
 // message to print during evaluation, in order to track the evaluation path.
@@ -31,6 +31,7 @@ class Number: public GenericExpression<Number>{
 
     Number(const double &x):val(x){}
     Number(const Number &x):val(x.evaluate()){}
+    Number(Number *x):val(x->evaluate()){}
     
     double evaluate()const  { msg; return val;}
     double& evaluate() { msg; return val;}
@@ -43,6 +44,7 @@ class Addition:public GenericExpression<Addition<leftHand,rightHand>>{
 
     public:
     Addition(const leftHand &LH, const rightHand &RH):LH(LH),RH(RH){}
+    Addition(Addition *add):LH(add->LH),RH(add->RH){}
 
     double evaluate() const {msg; return LH.evaluate() + RH.evaluate();}
 };
@@ -56,10 +58,10 @@ operator+(const GenericExpression<leftHand> &LH, const GenericExpression<rightHa
 
 class Expression: public GenericExpression<Expression>{
     public:
-    BaseExpression *baseExpr;
+    std::unique_ptr<BaseExpression> baseExpr;
 
     Expression()=default;
-    Expression(const Expression &E){baseExpr = E.baseExpr;};
+    // Expression(const Expression &E){baseExpr = (E.baseExpr ;};
     // Expression(Expression *E){baseExpr = E->baseExpr;};
 
     double evaluate() const {msg;  return baseExpr->evaluate();}
@@ -67,18 +69,11 @@ class Expression: public GenericExpression<Expression>{
 
     template<typename subExpr>
     void assign(const GenericExpression<subExpr> &RH){
-        
-        baseExpr = new subExpr(RH.self());
+        baseExpr = std::make_unique<subExpr>(new subExpr(RH.self()));
     }
 
 };
 
-
-// template<typename subExpr>
-// void assign(Expression &LH ,const GenericExpression<subExpr> &RH){
-    
-//     LH.baseExpr = new subExpr(RH.self());
-// }
 
 
 
