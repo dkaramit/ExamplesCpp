@@ -39,8 +39,8 @@ int main(){
     // cout<<z.evaluate()<<endl;
 
     // Uknown Segmentation fault!
-    // z.assign(y+x+x+x+x);
-    // w.assign(z+y+z);
+    // z.assign(y+x+x);
+    // w.assign(z+x+y);
     // cout<<w.evaluate()<<endl;
 
 
