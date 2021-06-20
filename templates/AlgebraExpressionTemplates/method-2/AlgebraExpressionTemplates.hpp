@@ -10,17 +10,21 @@
 #define msg std::cout<<typeid(*this).name()<<std::endl
 
 
+class Expression{
+    public:
+    std::function<double(void)> evaluate;
+    
+    template<typename T>
+    Expression(const T &RH){evaluate = RH.evaluate;}
 
-template<typename subExpr>
-struct GenericExpression{
-    const subExpr& self() const {return static_cast<const subExpr&>(*this);}
-    subExpr& self() {return static_cast<subExpr&>(*this);}
-
-    // double evaluate() const { msg; return self().evaluate(); };
+    template<typename T>
+    Expression& operator=(const T &RH){evaluate = RH.evaluate; return *this;}
 };
 
 
-class Number: public GenericExpression<Number>{
+
+
+class Number{ 
     double val;
     public:
     Number()=default;
@@ -32,7 +36,7 @@ class Number: public GenericExpression<Number>{
 };
 
 template<typename leftHand,typename rightHand>
-class Addition:public GenericExpression<Addition<leftHand,rightHand>>{
+class Addition{ 
     const leftHand &LH;
     const rightHand &RH;
 
@@ -44,22 +48,8 @@ class Addition:public GenericExpression<Addition<leftHand,rightHand>>{
 };
 
 template<typename leftHand,typename rightHand>
-Addition<leftHand,rightHand> 
-operator+(const GenericExpression<leftHand> &LH, const GenericExpression<rightHand> &RH){
-    return Addition<leftHand,rightHand>(LH.self(),RH.self()); 
-}
+auto operator+(const leftHand &LH, const rightHand &RH){return Addition<leftHand,rightHand>(LH,RH); }
 
-
-class Expression: public GenericExpression<Expression>{
-    public:
-    std::function<double(void)> evaluate;
-    
-    template<typename T>
-    Expression(const GenericExpression<T> &RH){evaluate = RH.self().evaluate;}
-
-    template<typename T>
-    Expression& operator=(const GenericExpression<T> &RH){evaluate = RH.self().evaluate; return *this;}
-};
 
 
 
