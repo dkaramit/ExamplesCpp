@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # run without segfault 
-g++ Test-stdout_stderr.cpp -o test.run -DsegF=false
+g++ Test-stdout_stderr.cpp -o test.run -DERR=false
 
 # print cout (this is stdout) stream in the file out. 
 # print cerr (this is stderr) stream in the file err, 
@@ -16,12 +16,12 @@ echo `./test.run 1>/dev/null | grep -c -E ".*"`
 echo `./test.run 2>&1 | grep -c -E ".*"`
 
 #if the return value is 0, it is equivalent to true
-./test.run 1>/dev/null 2>/dev/null && echo "no segfault" || echo "oops! segfault"
+./test.run 1>/dev/null 2>/dev/null && echo "no error" || echo "oops! error"
 
 # ---- compile and run with segfault  ---- #
-g++ Test-stdout_stderr.cpp -o test.run -DsegF=true
+g++ Test-stdout_stderr.cpp -o test.run -DERR=true
 
 
 #if the return value is not 0, it is equivalent to false
-./test.run 1>/dev/null 2>/dev/null && echo "no segfault" || echo "oops! segfault"
+./test.run 1>/dev/null 2>/dev/null && echo "no error" || echo "oops! error"
 
