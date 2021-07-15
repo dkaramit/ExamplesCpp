@@ -16,8 +16,9 @@ Or run commands.sh, in order to see some other things as well.
 #include<iostream>
 #include<vector>
 
-
-
+#ifndef segF
+    #define segF false
+#endif
 
 using namespace std;
 
@@ -26,7 +27,7 @@ int main(){
     cout<<"--stdout--\n"; //this preints to stdout (we can put this in a file using 1>file_name)
     cerr<<"--stderr--\n"; //this preints to stderr (we can put this in a file using 2>file_name)
 
-    #if false //segfault retuns something other than 0 (139 as far as I have seen). You can allow this to run, and see it for yourself.
+    #if segF //segfault retuns something other than 0 (139 as far as I have seen). You can allow this to run, and see it for yourself.
     vector<int> c{0,1,2};
     for(auto i = 0; i<1000000;++i){c[i]=1;} 
     #endif
