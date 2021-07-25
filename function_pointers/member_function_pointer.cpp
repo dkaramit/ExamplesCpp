@@ -13,7 +13,7 @@ class Test {
         return x*2.;
     }
 
-    // double(Test::*Func)(double) is the signature of a member function.
+    // double(Test::*)(double) is the signature of a member function.
     void res(   double(Test::*Func)(double)  ) ;
 };
 
